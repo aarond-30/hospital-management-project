@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 public class AppointmentDAO {
 
     // BOOK APPOINTMENT
-    public static void bookAppointment(
+    public static boolean bookAppointment(
             int patientId,
             int doctorId,
             String date,
@@ -30,7 +30,7 @@ public class AppointmentDAO {
 
             if (rs.next()) {
 
-                System.out.println("Doctor Already Booked");
+                return false;
 
             } else {
 
@@ -45,11 +45,14 @@ public class AppointmentDAO {
 
                 pst.executeUpdate();
 
-                System.out.println("Appointment Booked Successfully");
+                return true;
             }
 
         } catch (Exception e) {
+
             System.out.println(e);
+
+            return false;
         }
     }
 
@@ -77,6 +80,7 @@ public class AppointmentDAO {
             }
 
         } catch (Exception e) {
+
             System.out.println(e);
         }
     }
@@ -107,6 +111,7 @@ public class AppointmentDAO {
             }
 
         } catch (Exception e) {
+
             System.out.println(e);
         }
     }
@@ -126,9 +131,11 @@ public class AppointmentDAO {
 
             pst.executeUpdate();
 
-            System.out.println("Appointment Deleted Successfully");
+            System.out.println(
+                    "Appointment Deleted Successfully");
 
         } catch (Exception e) {
+
             System.out.println(e);
         }
     }
