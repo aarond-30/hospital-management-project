@@ -1,153 +1,189 @@
 package gui;
 
 import javax.swing.*;
-import java.awt.*;
-
-import database.AppointmentDAO;
+import java.awt.event.*;
 
 public class AppointmentForm extends JFrame {
 
-    JTextField patientIdField, doctorIdField,
-            dateField, timeField;
+    JLabel patientLabel;
+    JLabel doctorLabel;
+    JLabel dateLabel;
+    JLabel timeLabel;
+    JLabel statusLabel;
+
+    JTextField patientIdField;
+    JTextField doctorIdField;
+    JTextField dateField;
+    JTextField timeField;
+
+    JComboBox<String> statusBox;
 
     JButton bookBtn;
+    JButton clearBtn;
+    JButton backBtn;
 
     public AppointmentForm() {
 
-        setTitle("Book Appointment");
-        setSize(450, 400);
+        setTitle("Appointment Booking");
+        setSize(450, 500);
         setLayout(null);
-        setLocationRelativeTo(null);
 
-        getContentPane().setBackground(
-                new Color(230, 240, 255));
+        // ---------------- PATIENT ID ----------------
 
-        JLabel title = new JLabel(
-                "Book Appointment");
-
-        title.setFont(
-                new Font("Arial", Font.BOLD, 22));
-
-        title.setBounds(110, 10, 250, 30);
-
-        add(title);
-
-        JLabel patient = new JLabel("Patient ID");
-        patient.setFont(
-                new Font("Arial", Font.BOLD, 14));
-
-        patient.setBounds(50, 70, 100, 30);
-        add(patient);
+        patientLabel = new JLabel("Patient ID");
+        patientLabel.setBounds(50, 40, 120, 30);
+        add(patientLabel);
 
         patientIdField = new JTextField();
-        patientIdField.setBounds(170, 70, 180, 30);
+        patientIdField.setBounds(180, 40, 180, 30);
         add(patientIdField);
 
-        JLabel doctor = new JLabel("Doctor ID");
-        doctor.setFont(
-                new Font("Arial", Font.BOLD, 14));
+        // ---------------- DOCTOR ID ----------------
 
-        doctor.setBounds(50, 120, 100, 30);
-        add(doctor);
+        doctorLabel = new JLabel("Doctor ID");
+        doctorLabel.setBounds(50, 90, 120, 30);
+        add(doctorLabel);
 
         doctorIdField = new JTextField();
-        doctorIdField.setBounds(170, 120, 180, 30);
+        doctorIdField.setBounds(180, 90, 180, 30);
         add(doctorIdField);
 
-        JLabel dateLabel = new JLabel("Date");
-        dateLabel.setFont(
-                new Font("Arial", Font.BOLD, 14));
+        // ---------------- DATE ----------------
 
-        dateLabel.setBounds(50, 170, 100, 30);
+        dateLabel = new JLabel("Appointment Date");
+        dateLabel.setBounds(50, 140, 120, 30);
         add(dateLabel);
 
         dateField = new JTextField();
-        dateField.setBounds(170, 170, 180, 30);
+        dateField.setBounds(180, 140, 180, 30);
         add(dateField);
 
-        JLabel timeLabel = new JLabel("Time");
-        timeLabel.setFont(
-                new Font("Arial", Font.BOLD, 14));
+        // ---------------- TIME ----------------
 
-        timeLabel.setBounds(50, 220, 100, 30);
+        timeLabel = new JLabel("Appointment Time");
+        timeLabel.setBounds(50, 190, 120, 30);
         add(timeLabel);
 
         timeField = new JTextField();
-        timeField.setBounds(170, 220, 180, 30);
+        timeField.setBounds(180, 190, 180, 30);
         add(timeField);
 
+        // ---------------- CONSULTATION STATUS ----------------
+
+        statusLabel = new JLabel("Consultation Status");
+        statusLabel.setBounds(50, 240, 150, 30);
+        add(statusLabel);
+
+        String[] status = {
+                "Consulted",
+                "Not Consulted"
+        };
+
+        statusBox = new JComboBox<>(status);
+        statusBox.setBounds(180, 240, 180, 30);
+        add(statusBox);
+
+        // ---------------- BOOK BUTTON ----------------
+
         bookBtn = new JButton("Book");
-
-        bookBtn.setBounds(140, 290, 140, 40);
-
-        bookBtn.setBackground(
-                new Color(70, 130, 180));
-
-        bookBtn.setForeground(Color.WHITE);
-
-        bookBtn.setFont(
-                new Font("Arial", Font.BOLD, 15));
-
-        bookBtn.setFocusPainted(false);
-
+        bookBtn.setBounds(40, 330, 100, 40);
         add(bookBtn);
 
-        bookBtn.addActionListener(e -> {
+        // ---------------- CLEAR BUTTON ----------------
 
-            try {
+        clearBtn = new JButton("Clear");
+        clearBtn.setBounds(160, 330, 100, 40);
+        add(clearBtn);
 
-                int patientId =
-                        Integer.parseInt(
-                                patientIdField.getText());
+        // ---------------- BACK BUTTON ----------------
 
-                int doctorId =
-                        Integer.parseInt(
-                                doctorIdField.getText());
+        backBtn = new JButton("Back");
+        backBtn.setBounds(280, 330, 100, 40);
+        add(backBtn);
 
-                String appointmentDate =
+        // ====================================================
+        // BOOK BUTTON ACTION
+        // ====================================================
+
+        bookBtn.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+
+                String patientId =
+                        patientIdField.getText();
+
+                String doctorId =
+                        doctorIdField.getText();
+
+                String date =
                         dateField.getText();
 
-                String appointmentTime =
+                String time =
                         timeField.getText();
 
-                boolean booked =
-                        AppointmentDAO.bookAppointment(
-                                patientId,
-                                doctorId,
-                                appointmentDate,
-                                appointmentTime);
-
-                if (booked) {
-
-                    JOptionPane.showMessageDialog(
-                            null,
-                            "Appointment Booked Successfully");
-
-                    patientIdField.setText("");
-                    doctorIdField.setText("");
-                    dateField.setText("");
-                    timeField.setText("");
-
-                } else {
-
-                    JOptionPane.showMessageDialog(
-                            null,
-                            "Doctor Already Booked");
-                }
-
-            } catch (Exception ex) {
+                String consultationStatus =
+                        statusBox.getSelectedItem().toString();
 
                 JOptionPane.showMessageDialog(
                         null,
-                        ex.toString());
+
+                        "Appointment Booked Successfully\n\n"
+
+                        + "Patient ID : " + patientId + "\n"
+
+                        + "Doctor ID : " + doctorId + "\n"
+
+                        + "Date : " + date + "\n"
+
+                        + "Time : " + time + "\n"
+
+                        + "Status : " + consultationStatus
+                );
             }
         });
 
-        setDefaultCloseOperation(
-                JFrame.DISPOSE_ON_CLOSE);
+        // ====================================================
+        // CLEAR BUTTON ACTION
+        // ====================================================
+
+        clearBtn.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+
+                patientIdField.setText("");
+
+                doctorIdField.setText("");
+
+                dateField.setText("");
+
+                timeField.setText("");
+
+                statusBox.setSelectedIndex(0);
+            }
+        });
+
+        // ====================================================
+        // BACK BUTTON ACTION
+        // ====================================================
+
+        backBtn.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+
+                dispose();
+            }
+        });
+
+        // ---------------- FRAME SETTINGS ----------------
 
         setVisible(true);
+
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
+
+    // ====================================================
+    // MAIN METHOD
+    // ====================================================
 
     public static void main(String[] args) {
 

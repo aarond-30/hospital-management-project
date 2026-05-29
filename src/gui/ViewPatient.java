@@ -13,114 +13,160 @@ import database.DBConnection;
 
 public class ViewPatient extends JFrame {
 
-        JTable table;
+    JTable table;
 
-        DefaultTableModel model;
+    DefaultTableModel model;
 
-        public ViewPatient() {
+    public ViewPatient() {
 
-                setTitle("Patient Records");
+        setTitle("Patient Records");
 
-                setSize(850, 450);
+        setSize(1000, 450);
 
-                setLocationRelativeTo(null);
+        setLocationRelativeTo(null);
 
-                getContentPane().setBackground(
-                                new Color(230, 240, 255));
+        getContentPane().setBackground(
+                new Color(230, 240, 255));
 
-                JLabel title = new JLabel(
-                                "Patient Records");
+        JLabel title = new JLabel(
+                "Patient Records");
 
-                title.setFont(
-                                new Font("Arial", Font.BOLD, 22));
+        title.setFont(
+                new Font("Arial", Font.BOLD, 22));
 
-                title.setBounds(300, 10, 300, 30);
+        title.setBounds(350, 10, 300, 30);
 
-                add(title);
+        add(title);
 
-                String[] columns = {
+        // UPDATED COLUMNS
 
-                                "ID",
-                                "Name",
-                                "Age",
-                                "Gender",
-                                "Phone",
-                                "Disease",
-                                "Address"
+        String[] columns = {
+
+                "ID",
+                "Name",
+                "Age",
+                "Gender",
+                "Phone",
+                "Disease",
+                "Address",
+                "Doctor Visited",
+                "Consultation Status"
+        };
+
+        model = new DefaultTableModel(
+                columns,
+                0);
+
+        table = new JTable(model);
+
+        table.setFont(
+                new Font("Arial", Font.PLAIN, 13));
+
+        table.setRowHeight(25);
+
+        JScrollPane pane = new JScrollPane(table);
+
+        pane.setBounds(20, 60, 940, 320);
+
+        add(pane);
+
+        setLayout(null);
+
+        loadPatientData();
+
+        setVisible(true);
+
+        setDefaultCloseOperation(
+                JFrame.DISPOSE_ON_CLOSE);
+    }
+
+    // LOAD DATA
+
+    public void loadPatientData() {
+
+        try {
+
+            Connection con =
+                    DBConnection.getConnection();
+
+            String query =
+                    "SELECT * FROM patients";
+
+            PreparedStatement pst =
+                    con.prepareStatement(query);
+
+            ResultSet rs =
+                    pst.executeQuery();
+
+            while (rs.next()) {
+
+                // CONSULTATION STATUS LOGIC
+
+                String consultationStatus;
+
+                String doctorVisited;
+
+                String disease =
+                        rs.getString("disease");
+
+                // SAMPLE LOGIC
+
+                if (disease != null &&
+                        !disease.isEmpty()) {
+
+                    consultationStatus =
+                            "Consulted";
+
+                    doctorVisited =
+                            "YES";
+                }
+
+                else {
+
+                    consultationStatus =
+                            "Not Consulted";
+
+                    doctorVisited =
+                            "NO";
+                }
+
+                Object[] row = {
+
+                        rs.getInt("patient_id"),
+
+                        rs.getString("name"),
+
+                        rs.getInt("age"),
+
+                        rs.getString("gender"),
+
+                        rs.getString("phone"),
+
+                        rs.getString("disease"),
+
+                        rs.getString("address"),
+
+                        doctorVisited,
+
+                        consultationStatus
                 };
 
-                model = new DefaultTableModel(
-                                columns,
-                                0);
+                model.addRow(row);
+            }
 
-                table = new JTable(model);
-
-                table.setFont(
-                                new Font("Arial", Font.PLAIN, 13));
-
-                table.setRowHeight(25);
-
-                JScrollPane pane = new JScrollPane(table);
-
-                pane.setBounds(20, 60, 790, 320);
-
-                add(pane);
-
-                setLayout(null);
-
-                loadPatientData();
-
-                setVisible(true);
-
-                setDefaultCloseOperation(
-                                JFrame.DISPOSE_ON_CLOSE);
         }
 
-        // LOAD DATA
-        public void loadPatientData() {
+        catch (Exception e) {
 
-                try {
-
-                        Connection con = DBConnection.getConnection();
-
-                        String query = "SELECT * FROM patients";
-
-                        PreparedStatement pst = con.prepareStatement(query);
-
-                        ResultSet rs = pst.executeQuery();
-
-                        while (rs.next()) {
-
-                                Object[] row = {
-
-                                                rs.getInt("patient_id"),
-
-                                                rs.getString("name"),
-
-                                                rs.getInt("age"),
-
-                                                rs.getString("gender"),
-
-                                                rs.getString("phone"),
-
-                                                rs.getString("disease"),
-
-                                                rs.getString("address")
-                                };
-
-                                model.addRow(row);
-                        }
-
-                } catch (Exception e) {
-
-                        JOptionPane.showMessageDialog(
-                                        null,
-                                        e.toString());
-                }
+            JOptionPane.showMessageDialog(
+                    null,
+                    e.toString());
         }
+    }
 
-        public static void main(String[] args) {
+    public static void main(String[] args) {
 
-                new ViewPatient();
-        }
+        new ViewPatient();
+    }
 }
+
