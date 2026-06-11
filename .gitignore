@@ -1,2 +1,12 @@
+target/
 out/
 *.class
+*.log
+logs/
+config.properties
+apache-maven-3.9.8/
+*.pdf
+PatientReport_*
+Invoice_Bill_*
+LabReport_Diagnostics_*
+Prescription_Slip_*
